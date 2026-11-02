@@ -126,16 +126,6 @@
   <p class="sub" id="t-sub">Escolha a versão para o seu aparelho</p>
 
   <div class="apps">
-    <a class="app" id="pro" href="https://github.com/EldoFarias/odle-download/releases/download/pro/odle-pro.apk">
-      <img src="img/icon-pro.png" alt="">
-      <div class="info">
-        <h2>ODLE PRO</h2>
-        <div class="tag" data-t="pro_tag">Completo · Celular, TV Box e Android TV</div>
-        <div class="req" data-t="pro_req">Android 7.0 ou superior</div>
-      </div>
-      <span class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span data-t="btn">Baixar APK</span></span>
-      <div class="ver" id="v-pro"></div>
-    </a>
     <a class="app" id="lite" href="https://github.com/EldoFarias/odle-download/releases/download/lite/odle-lite.apk">
       <img src="img/icon-lite.png" alt="">
       <div class="info">
@@ -145,6 +135,16 @@
       </div>
       <span class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span data-t="btn">Baixar APK</span></span>
       <div class="ver" id="v-lite"></div>
+    </a>
+    <a class="app" id="pro" href="https://github.com/EldoFarias/odle-download/releases/download/pro/odle-pro.apk">
+      <img src="img/icon-pro.png" alt="">
+      <div class="info">
+        <h2>ODLE PRO</h2>
+        <div class="tag" data-t="pro_tag">Completo · Celular, TV Box e Android TV</div>
+        <div class="req" data-t="pro_req">Android 7.0 ou superior</div>
+      </div>
+      <span class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span data-t="btn">Baixar APK</span></span>
+      <div class="ver" id="v-pro"></div>
     </a>
   </div>
 
@@ -184,8 +184,8 @@
     toastMsg = L.toast;
   }
 
-  // Controle remoto: foco já no primeiro app; setas trocam entre os dois, OK baixa.
-  var apps = [document.getElementById('pro'), document.getElementById('lite')];
+  // Controle remoto: foco já no LITE (só dar OK baixa ele); setas trocam entre os dois, OK baixa.
+  var apps = [document.getElementById('lite'), document.getElementById('pro')];
   apps[0].focus();
   document.addEventListener('keydown', function (e) {
     var k = e.keyCode, cur = apps.indexOf(document.activeElement);
