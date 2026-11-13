@@ -222,6 +222,59 @@
     };
     x.send();
   }
+  // ── Acessos (painel ADM → Acessos) ─────────────────────────────────────────
+  // Só contadores: página, origem e tipo de aparelho. Sem cookie, sem IP e sem
+  // identificador. O navegador guarda só a data da última visita, para contar o
+  // visitante uma vez por dia. ES5 de propósito: TV Box antiga também abre.
+  function odleTrack(site, page, statsUrl) {
+    function send(o) {
+      var b = JSON.stringify(o);
+      try { if (navigator.sendBeacon && navigator.sendBeacon(statsUrl, b)) return; } catch (e) {}
+      try {
+        var x = new XMLHttpRequest();
+        x.open('POST', statsUrl, true);
+        x.setRequestHeader('Content-Type', 'text/plain');
+        x.send(b);
+      } catch (e) {}
+    }
+    function origin() {
+      var u = /[?&]utm_source=([^&#]+)/.exec(location.search);
+      if (u) return decodeURIComponent(u[1]);
+      if (/[#&]m=/.test(location.hash)) return 'qr-app';
+      var host = ((document.referrer || '').split('/')[2] || '').toLowerCase();
+      if (!host || host === location.host) return 'direto';
+      if (/(^|\.)google\./.test(host)) return 'google';
+      if (/bing\.|yahoo\.|duckduckgo|yandex|ecosia/.test(host)) return 'outras-buscas';
+      if (/whatsapp/.test(host)) return 'whatsapp';
+      if (/instagram/.test(host)) return 'instagram';
+      if (/facebook|(^|\.)fb\./.test(host)) return 'facebook';
+      if (/youtube|youtu\.be/.test(host)) return 'youtube';
+      if (/tiktok|kwai|t\.co$|twitter|x\.com$|telegram|t\.me$|threads/.test(host)) return 'redes-sociais';
+      if (/odle-x\.com\.br$/.test(host)) return host.split('.')[0];
+      return 'outros-sites';
+    }
+    var ua = navigator.userAgent || '';
+    var dev = /SMART-TV|SmartTV|Tizen|Web0S|webOS|NetCast|AFT[A-Z]|BRAVIA|Android TV|GoogleTV|CrKey|Roku|HbbTV|\bTV\b/i.test(ua) ||
+      (/Android/.test(ua) && !/Mobile/.test(ua)) ? 'tv' : /Mobi|Android|iPhone|iPad|iPod/.test(ua) ? 'celular' : 'computador';
+    var today = new Date(Date.now() - 108e5).toISOString().slice(0, 10);
+    var nv = 1, nw = 0;
+    try {
+      var k = 'odle_visita_' + site, last = localStorage.getItem(k);
+      if (last === today) nv = 0; else { if (!last) nw = 1; localStorage.setItem(k, today); }
+    } catch (e) {}
+    var hit = { s: site, p: page };
+    if (nv) { hit.nv = 1; hit.nw = nw; hit.r = origin(); hit.d = dev; }
+    send(hit);
+    // Clique em baixar APK (LITE/PRO).
+    document.addEventListener('click', function (ev) {
+      var a = ev.target;
+      while (a && a.tagName !== 'A') a = a.parentNode;
+      var m = a && /odle-(lite|pro)\.apk/.exec(a.getAttribute('href') || '');
+      if (m) send({ s: site, e: 'dl', a: m[1] });
+    }, true);
+  }
+  odleTrack('apk', 'inicio', 'https://api-23ellct5nq-uc.a.run.app/stats/hit');
+
   info('pro', 'v-pro');
   info('lite', 'v-lite');
 })();
