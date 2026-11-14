@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ODLE — Baixar APK</title>
 <meta name="description" content="Baixe o APK do ODLE PRO ou do ODLE IPTV LITE para Android e TV Box.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://apk.odle-x.com.br/">
+<meta property="og:title" content="ODLE — Baixar APK">
+<meta property="og:description" content="Baixe o ODLE PRO ou o ODLE IPTV LITE para Android e TV Box.">
+<meta property="og:image" content="https://odle.odle-x.com.br/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#090c15">
 <link rel="icon" href="favicon.png">
 <!--
@@ -117,6 +125,39 @@
     .app:focus, .app:hover { -webkit-transform: none; transform: none; }
     .foot { margin-top: 2vh; font-size: 1.6vh; }
   }
+
+  /* Como instalar: botão abaixo dos cartões e painel por cima (sem rolar a página). */
+  .help-btn {
+    margin-top: 3.4vh; padding: 1.2vh 3.4vh; border-radius: 999px; border: 2px solid #353e52;
+    background: transparent; color: #eef1f7; font: inherit; font-weight: 700; font-size: 2.1vh; cursor: pointer; outline: none;
+  }
+  .help-btn:focus, .help-btn:hover { border-color: #e8333a; background: rgba(232, 51, 58, .16); }
+  .help {
+    position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 20; background: rgba(5, 7, 13, .86);
+    display: none; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; padding: 3vh 16px;
+  }
+  .help.open { display: -webkit-flex; display: flex; }
+  .help-box {
+    width: 100%; max-width: 760px; max-height: 94vh; overflow-y: auto; background: #121725; border: 2px solid #353e52;
+    border-radius: 22px; padding: 3.6vh 4vh; text-align: left;
+  }
+  .help-box h2 { margin: 0 0 2.4vh; font-size: 3.4vh; }
+  .help-box ol { margin: 0; padding-left: 1.4em; }
+  .help-box li { font-size: 2.2vh; line-height: 1.45; margin-bottom: 1.5vh; color: #c9d0dd; }
+  .help-box li b { color: #eef1f7; }
+  .help-box .tip { margin: 2.2vh 0 0; padding: 1.6vh 2vh; border-radius: 12px; background: #181e2f; border-left: 4px solid #34d399; font-size: 2vh; color: #c9d0dd; line-height: 1.45; }
+  .help-close {
+    display: block; width: 100%; margin-top: 3vh; padding: 1.6vh; border: 0; border-radius: 999px; background: #e8333a; color: #fff;
+    font: inherit; font-weight: 700; font-size: 2.3vh; cursor: pointer; outline: none;
+  }
+  .help-close:focus { box-shadow: 0 0 0 4px rgba(232, 51, 58, .4); }
+  @media (max-aspect-ratio: 4/5) {
+    .help-btn { margin-top: 1.4vh; font-size: 1.8vh; padding: 1.1vh 2.6vh; }
+    .help-box { padding: 24px 20px; }
+    .help-box h2 { font-size: 22px; }
+    .help-box li, .help-box .tip { font-size: 15px; }
+    .help-close { font-size: 16px; padding: 12px; }
+  }
 </style>
 </head>
 <body>
@@ -148,9 +189,24 @@
     </a>
   </div>
 
+  <button type="button" class="help-btn" id="help-btn" data-t="help_btn">Como instalar?</button>
   <p class="foot" id="t-foot">Depois de baixar, abra o arquivo e permita instalar desta fonte. · Site completo: <b>odle.odle-x.com.br</b></p>
 </main>
 <div class="toast" id="toast"></div>
+
+<div class="help" id="help" role="dialog" aria-modal="true" aria-labelledby="help-title">
+  <div class="help-box">
+    <h2 id="help-title" data-t="help_title">Como instalar o ODLE</h2>
+    <ol>
+      <li data-t="help_1"><b>Escolha a versão e baixe.</b> PRO para celular, TV Box e Android TV mais novos. LITE para TV Box antiga ou com pouca memória.</li>
+      <li data-t="help_2"><b>Abra o arquivo baixado.</b> Toque na notificação de download ou abra o app Arquivos (ou Downloads) e escolha <b>odle-pro.apk</b> ou <b>odle-lite.apk</b>.</li>
+      <li data-t="help_3"><b>Permita a instalação.</b> Se aparecer “instalação bloqueada”, toque em Configurações, ative <b>Permitir desta fonte</b>, volte e toque em <b>Instalar</b>.</li>
+      <li data-t="help_4"><b>Abra o ODLE.</b> Anote o <b>MAC</b> da tela inicial e, pelo celular, envie sua lista e ative a licença em <b>odle.odle-x.com.br</b>.</li>
+    </ol>
+    <p class="tip" data-t="help_tip">TV Box sem navegador ou sem gerenciador de arquivos? Instale o app <b>Downloader</b> pela Play Store da TV, abra e digite <b>apk.odle-x.com.br</b>.</p>
+    <button type="button" class="help-close" id="help-close" data-t="help_close">Entendi</button>
+  </div>
+</div>
 
 <script>
 (function () {
@@ -161,14 +217,26 @@
       pro_tag: 'Full-featured · Phone, TV box and Android TV', pro_req: 'Android 7.0 or later',
       lite_tag: 'Ultra-light · Older TV boxes, low memory', lite_req: 'Android 5.0 or later · 1 GB RAM',
       foot: 'After downloading, open the file and allow installs from this source. · Full site: <b>odle.odle-x.com.br</b>',
-      toast: 'Download started. Open the file from your Downloads to install.'
+      toast: 'Download started. Open the file from your Downloads to install.',
+      help_btn: 'How to install?', help_title: 'How to install ODLE', help_close: 'Got it',
+      help_1: '<b>Choose the version and download it.</b> PRO for phones, TV boxes and newer Android TVs. LITE for older TV boxes or low memory.',
+      help_2: '<b>Open the downloaded file.</b> Tap the download notification, or open the Files (or Downloads) app and pick <b>odle-pro.apk</b> or <b>odle-lite.apk</b>.',
+      help_3: '<b>Allow the install.</b> If you see “install blocked”, tap Settings, turn on <b>Allow from this source</b>, go back and tap <b>Install</b>.',
+      help_4: '<b>Open ODLE.</b> Note the <b>MAC</b> on the home screen and, from your phone, add your playlist and activate the license at <b>odle.odle-x.com.br</b>.',
+      help_tip: 'TV box with no browser or file manager? Install the <b>Downloader</b> app from the TV’s Play Store, open it and type <b>apk.odle-x.com.br</b>.'
     },
     es: {
       title: 'Descarga la app ODLE', sub: 'Elige la versión para tu equipo', btn: 'Descargar APK',
       pro_tag: 'Completa · Móvil, TV Box y Android TV', pro_req: 'Android 7.0 o superior',
       lite_tag: 'Ultraligera · TV Box antigua y poca memoria', lite_req: 'Android 5.0 o superior · 1 GB de RAM',
       foot: 'Después de descargar, abre el archivo y permite instalar desde esta fuente. · Sitio completo: <b>odle.odle-x.com.br</b>',
-      toast: 'Descarga iniciada. Abre el archivo en Descargas para instalar.'
+      toast: 'Descarga iniciada. Abre el archivo en Descargas para instalar.',
+      help_btn: '¿Cómo instalar?', help_title: 'Cómo instalar ODLE', help_close: 'Entendido',
+      help_1: '<b>Elige la versión y descárgala.</b> PRO para móvil, TV Box y Android TV más nuevos. LITE para TV Box antigua o con poca memoria.',
+      help_2: '<b>Abre el archivo descargado.</b> Toca la notificación de descarga o abre la app Archivos (o Descargas) y elige <b>odle-pro.apk</b> u <b>odle-lite.apk</b>.',
+      help_3: '<b>Permite la instalación.</b> Si aparece “instalación bloqueada”, toca Ajustes, activa <b>Permitir de esta fuente</b>, vuelve y toca <b>Instalar</b>.',
+      help_4: '<b>Abre ODLE.</b> Anota la <b>MAC</b> de la pantalla inicial y, desde el móvil, envía tu lista y activa la licencia en <b>odle.odle-x.com.br</b>.',
+      help_tip: '¿TV Box sin navegador ni gestor de archivos? Instala la app <b>Downloader</b> desde la Play Store de la TV, ábrela y escribe <b>apk.odle-x.com.br</b>.'
     }
   };
   var toastMsg = 'Download iniciado. Abra o arquivo em Downloads para instalar.';
@@ -184,16 +252,29 @@
     toastMsg = L.toast;
   }
 
-  // Controle remoto: foco já no LITE (só dar OK baixa ele); setas trocam entre os dois, OK baixa.
+  // Controle remoto: foco já no LITE (só dar OK baixa ele); esquerda/direita trocam entre os dois,
+  // baixo vai para "Como instalar?" e cima volta. Com o painel aberto, Voltar/Esc fecha.
   var apps = [document.getElementById('lite'), document.getElementById('pro')];
+  var helpBtn = document.getElementById('help-btn'), help = document.getElementById('help'), helpClose = document.getElementById('help-close');
+  var lastApp = 0;
+  function openHelp() { help.className = 'help open'; helpClose.focus(); }
+  function closeHelp() { help.className = 'help'; helpBtn.focus(); }
+  helpBtn.addEventListener('click', openHelp);
+  helpClose.addEventListener('click', closeHelp);
+  help.addEventListener('click', function (e) { if (e.target === help) closeHelp(); });
   apps[0].focus();
   document.addEventListener('keydown', function (e) {
-    var k = e.keyCode, cur = apps.indexOf(document.activeElement);
+    var k = e.keyCode, a = document.activeElement, cur = apps.indexOf(a);
+    if (help.className.indexOf('open') !== -1) {
+      if (k === 27 || k === 4 || k === 8 || k === 10009 || k === 461) { e.preventDefault(); closeHelp(); }
+      else if (k >= 37 && k <= 40 && a !== helpClose) { e.preventDefault(); helpClose.focus(); }
+      return;
+    }
     if (k >= 37 && k <= 40) {
       e.preventDefault();
-      var next = (k === 37 || k === 38) ? 0 : 1;
-      if (cur === -1) next = 0;
-      apps[next].focus();
+      if (k === 40) { if (cur !== -1) lastApp = cur; helpBtn.focus(); return; }
+      if (k === 38) { apps[a === helpBtn ? lastApp : 0].focus(); return; }
+      apps[k === 37 ? 0 : 1].focus();
     }
   });
 
