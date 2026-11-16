@@ -288,7 +288,17 @@
     });
   }
 
-  // Versão e tamanho de cada APK (release do GitHub). Se falhar, a linha fica vazia.
+  // Data de quando o APK foi enviado, no dia de Brasília (UTC−3): "atualizado em 15/11/2026".
+  function updated(iso) {
+    var t = Date.parse(iso);
+    if (isNaN(t)) return '';
+    var d = new Date(t - 3 * 3600 * 1000), dd = ('0' + d.getUTCDate()).slice(-2), mm = ('0' + (d.getUTCMonth() + 1)).slice(-2), yy = d.getUTCFullYear();
+    if (lang === 'en') return 'updated ' + mm + '/' + dd + '/' + yy;
+    if (lang === 'es') return 'actualizado el ' + dd + '/' + mm + '/' + yy;
+    return 'atualizado em ' + dd + '/' + mm + '/' + yy;
+  }
+
+  // Versão, tamanho e data de atualização de cada APK (release do GitHub). Se falhar, a linha fica vazia.
   function info(tag, el) {
     var x = new XMLHttpRequest();
     x.open('GET', 'https://api.github.com/repos/EldoFarias/odle-download/releases/tags/' + tag);
@@ -298,6 +308,7 @@
         var parts = [];
         if (v) parts.push(v[0]);
         if (a && a.size) parts.push((a.size / 1048576).toFixed(1).replace('.', lang === 'en' ? '.' : ',') + ' MB');
+        if (a && a.updated_at) parts.push(updated(a.updated_at));
         document.getElementById(el).innerHTML = parts.join(' · ');
       } catch (e) {}
     };
