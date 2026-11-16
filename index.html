@@ -355,6 +355,9 @@
       if (last === today) nv = 0; else { if (!last) nw = 1; localStorage.setItem(k, today); }
     } catch (e) {}
     var hit = { s: site, p: page };
+    // Fuso horário do aparelho: o servidor transforma em país. Sem IP.
+    try { hit.z = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+    hit.l = navigator.language || '';
     if (nv) { hit.nv = 1; hit.nw = nw; hit.r = origin(); hit.d = dev; }
     send(hit);
     // Clique em baixar APK (LITE/PRO).
