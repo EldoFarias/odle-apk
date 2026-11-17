@@ -319,6 +319,13 @@
   // identificador. O navegador guarda só a data da última visita, para contar o
   // visitante uma vez por dia. ES5 de propósito: TV Box antiga também abre.
   function odleTrack(site, page, statsUrl) {
+    // ?naocontar=1 (link no ADM → Acessos): este navegador para de contar (o dono testando).
+    // ?naocontar=0 volta a contar.
+    try {
+      var nc = /[?&]naocontar=([01])/.exec(location.search);
+      if (nc) { if (nc[1] === '1') localStorage.setItem('odle_naocontar', '1'); else localStorage.removeItem('odle_naocontar'); }
+      if (localStorage.getItem('odle_naocontar') === '1') return;
+    } catch (e) {}
     function send(o) {
       var b = JSON.stringify(o);
       try { if (navigator.sendBeacon && navigator.sendBeacon(statsUrl, b)) return; } catch (e) {}
